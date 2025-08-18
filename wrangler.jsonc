@@ -1,7 +1,9 @@
 {
   "name": "forecast",
   "compatibility_date": "2025-08-14",
+  "main": "./src/index.ts",
   "assets": {
     "directory": "./dist",
   },
+  "triggers": { "crons": [] },
 }
