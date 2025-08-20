@@ -1,33 +1,66 @@
-import React from 'react'
-import Button from './button'
-import { wait } from '@lib/utils'
+import { useForecastContext } from '@context/store'
+import Select from 'react-select'
+import UpdateButton from './update-button'
+import { fetchData, formatDate, generateCitySelection } from '@lib/utils'
+import { citySelection, coordinates, FORECAST_URL } from '@lib/constant'
 
-import type { ForecastData, City } from '@lib/types/forecast-data'
+import type { SingleValue } from 'react-select'
+import type {
+  City,
+  CitySelection,
+  ForecastData,
+} from '@lib/types/forecast-data'
 
-type Props = {
-  url: string
-  updateKey: City
-  onUpdate: (value: ForecastData, key: City) => void
-}
+export default function UpdateForecast() {
+  const {
+    key: city,
+    setKey,
+    storage,
+    getStorage,
+    setStorage,
+    refreshStorage,
+  } = useForecastContext<ForecastData, City>()
 
-export default function UpdateForecast({ url, updateKey, onUpdate }: Props) {
-  const [state, setState] = React.useState<'idle' | 'loading' | 'success'>(
-    'idle',
-  )
+  if (!storage) return
 
-  async function handleClickUpdate() {
-    setState('loading')
+  const { current } = storage
 
-    const result = await fetch(url).then(res => res.json())
+  async function handleSelectCities(e: SingleValue<CitySelection>) {
+    const selectedCity = e?.value as City
+    const storedCity = getStorage(selectedCity)
 
-    onUpdate(result, updateKey)
+    if (!storedCity) {
+      const [lat, long] = coordinates[selectedCity]
+      const result = await fetchData(
+        FORECAST_URL + '&latitude=' + lat + '&longitude=' + long,
+      )
 
-    setState('success')
-    await wait(2000)
-    setState('idle')
+      setStorage(selectedCity, result)
+      setKey(selectedCity)
+    } else {
+      refreshStorage(selectedCity)
+      setKey(selectedCity)
+    }
   }
 
   return (
-    <Button children="بروزرسانی" state={state} onClick={handleClickUpdate} />
+    <div className="flex grow flex-wrap items-center gap-2 rounded-md border border-slate-400 p-2 sm:w-64 sm:gap-0">
+      <div className="flex w-full flex-col gap-2 sm:flex-1/2">
+        <Select
+          options={citySelection}
+          autoFocus
+          closeMenuOnScroll
+          onChange={handleSelectCities}
+          value={generateCitySelection(city)}
+          placeholder="انتخاب شهر"
+        />
+        <UpdateButton />
+      </div>
+
+      <div className="w-full shrink-0 space-y-2 text-center sm:flex-1/2">
+        <h3 className="text-slate-400">آخرین بروزرسانی</h3>
+        <h3 className="text-lg">{formatDate(current.time)}</h3>
+      </div>
+    </div>
   )
 }

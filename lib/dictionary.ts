@@ -1,4 +1,19 @@
-import type { CurrentUnitsProps, HourlyProps } from './types/forecast-data'
+import type {
+  City,
+  CurrentUnitsProps,
+  HourlyProps,
+} from './types/forecast-data'
+
+export const citiesInEnglish: Record<City, string> = {
+  لاهیجان: 'Lahijan',
+  شفت: 'Shaft',
+  املش: 'Amlash',
+  فومن: 'Fuman',
+  شیرگاه: 'Shirgah',
+  توتکابن: 'Tutkabon',
+  'رستم آباد': 'Rostamabad',
+  سیاهکل: 'Siahkal',
+}
 
 export const currentPropsInPersian: Partial<CurrentUnitsProps> = {
   temperature_2m: 'دما',

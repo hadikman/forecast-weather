@@ -16,6 +16,12 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@lib': path.resolve(__dirname, 'lib'),
+      '@context': path.resolve(__dirname, 'context'),
+    },
+  },
+  server: {
+    proxy: {
+      '/api': 'http://127.0.0.1:8787',
     },
   },
 })

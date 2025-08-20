@@ -1,60 +1,48 @@
-import type {
-  ScheduledController,
-  ExecutionContext,
-} from '@cloudflare/workers-types'
+import type { ExecutionContext } from '@cloudflare/workers-types'
+
+const APP_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbyvb78MK5nDMLNHwi3Z7qV15ofzXzqIzk8qmAmC-EFqJlyYLdFQX906vkCpO17W2duk/exec'
 
 interface Env {}
 export default {
-  // async fetch(request: Request, env: Env, ctx: ExecutionContext) {
-  async fetch(_request: Request, _env: Env, _ctx: ExecutionContext) {
-    return new Response('Hello World!')
-  },
-  async scheduled(
-    _controller: ScheduledController,
-    _env: Env,
-    ctx: ExecutionContext,
-  ) {
-    ctx.waitUntil(run())
+  async fetch(request: Request, _env: Env, _ctx: ExecutionContext) {
+    const url = new URL(request.url)
+    const allowedOrigins = [
+      'https://forecast.hadikman.workers.dev',
+      'https://forecast.hadikman.workers.dev/',
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://localhost:4173/',
+      'http://127.0.0.1:4173/',
+    ]
+    const origin = request.headers.get('Origin')
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type',
+    }
+
+    if (origin && allowedOrigins.includes(origin)) {
+      headers['Access-Control-Allow-Origin'] = origin
+    }
+
+    // Handle CORS preflight OPTIONS request
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers })
+    }
+
+    if (url.pathname.startsWith('/api')) {
+      const querySheetName = url.searchParams.get('sheetName')
+      const targetUrl = APP_SCRIPT_URL + '?sheetName=' + querySheetName
+      const response = await fetch(targetUrl)
+      const data = await response.json()
+
+      return new Response(JSON.stringify(data), {
+        status: response.status,
+        headers,
+      })
+    }
+
+    return new Response(null, { status: 404 })
   },
 }
-
-// Run "npx wrangler dev --test-scheduled" to see wrangelr server
-// To see the run() is working, use http://127.0.0.1:8787/__scheduled
-// To schdule the run(), triggers:{crons:["* * * * *"]} into wrangler.jsonc
-async function run() {
-  let searchParams = new URLSearchParams()
-  data.forEach(item => {
-    const [key, arrayValues] = item
-    searchParams.set(key as string, arrayValues as string)
-  })
-
-  // Post data to Code.gs doPost(e)
-  // body: a=1&b='2'&c=3,4
-  await fetch(spreadsheetUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: searchParams.toString(),
-  })
-
-  // Read from Code.gs doGet(e)
-  const result = await (await fetch(spreadsheetUrl)).json()
-  const { headers, rows } = result
-
-  const rowsArr = rows.map((item: []) =>
-    item.map((value: string) => value.split(',')),
-  )
-
-  console.log(headers)
-  console.log(rowsArr)
-}
-
-// URL of web app from deploy button
-const spreadsheetUrl =
-  'https://script.google.com/macros/s/AKfycbyl3ydSW3A7idNbq_mYqg7XS-yOhZjMmBCK_V3rLNfW5aFnIsm3YjcV0fWrhwb44wVm/exec'
-
-// Example of post data to doPost()
-const data = [
-  ['uv', [71, 71]],
-  ['temp', [31.1, 30.7, 29.9]],
-  ['time', ['2025-08-12T14:00', '2025-08-12T15:00']],
-]
