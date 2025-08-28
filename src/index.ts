@@ -1,7 +1,7 @@
 import type { ExecutionContext } from '@cloudflare/workers-types'
 
 const APP_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbyvb78MK5nDMLNHwi3Z7qV15ofzXzqIzk8qmAmC-EFqJlyYLdFQX906vkCpO17W2duk/exec'
+  'https://script.google.com/macros/s/AKfycbwU8Y-4UXQjhZZi6LHOwnt7nPdwGrHz5h4VGTEioUc7eQUQUY9oucUXF98p8wM6J6Fb/exec'
 
 interface Env {}
 export default {
@@ -32,9 +32,9 @@ export default {
     }
 
     if (url.pathname.startsWith('/api')) {
-      const querySheetName = url.searchParams.get('sheetName')
-      const targetUrl = APP_SCRIPT_URL + '?sheetName=' + querySheetName
-      const response = await fetch(targetUrl)
+      const searchParams = url.searchParams.toString()
+
+      const response = await fetch(`${APP_SCRIPT_URL}?${searchParams}`)
       const data = await response.json()
 
       return new Response(JSON.stringify(data), {
