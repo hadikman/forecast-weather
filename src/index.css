@@ -53,7 +53,8 @@
 body {
   margin: 0;
   display: flex;
-  min-height: 100svh;
+  height: 100svh;
+  overflow-y: hidden;
   color: hsl(0 0% 14%);
   background-color: hsla(0 0% 98%);
 }
