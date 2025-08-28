@@ -1,4 +1,5 @@
 import { useForecastContext } from '@context/store'
+import Frame from './ui/frame'
 import Table from './ui/table'
 import { hourlyDataToTableData, fetchData, wrapPromise } from '@lib/utils'
 import { citiesInEnglish } from '@lib/dictionary'
@@ -13,7 +14,7 @@ const fetchResult = (city: string) => {
   }
 
   const result = wrapPromise<{ data: ForecastData['hourly'] }>(
-    fetchData('/api?sheetName=' + city),
+    fetchData('/api?queryType=get-data&sheetName=' + city),
   )
   cache.set(city, result)
 
@@ -24,18 +25,19 @@ export default function TablePast24H() {
   const { key } = useForecastContext<ForecastData, City>()
   const forecastResult = fetchResult(citiesInEnglish[key])
   const forecast = forecastResult.read()
+
   const hourlyForecast = forecast.data
 
   const { hourlyWeatherTitle, convertedHourlyWeather } =
     hourlyDataToTableData<ForecastData['hourly']>(hourlyForecast)
 
   return (
-    <div className="flex overflow-x-auto rounded-md border border-slate-400 px-2 select-none">
+    <Frame className="overflow-x-auto select-none">
       <Table
         title="متغیرهای آب و هوایی 24 ساعت قبل"
         hourlyWeatherTitle={hourlyWeatherTitle}
         convertedHourlyWeather={convertedHourlyWeather}
       />
-    </div>
+    </Frame>
   )
 }

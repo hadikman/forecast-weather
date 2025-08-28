@@ -1,4 +1,5 @@
 import { useForecastContext } from '@context/store'
+import Frame from './ui/frame'
 import Table from './ui/table'
 import { hourlyDataToTableData } from '@lib/utils'
 
@@ -15,12 +16,12 @@ export default function TableForecast24H() {
     hourlyDataToTableData<ForecastData['hourly']>(hourly)
 
   return (
-    <div className="flex overflow-x-auto rounded-md border border-slate-400 px-2 select-none">
+    <Frame className="overflow-x-auto select-none">
       <Table
         title="متغیرهای آب و هوایی 24 ساعت آینده"
         hourlyWeatherTitle={hourlyWeatherTitle}
         convertedHourlyWeather={convertedHourlyWeather}
       />
-    </div>
+    </Frame>
   )
 }

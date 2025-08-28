@@ -5,12 +5,11 @@ import { fetchData, wait } from '@lib/utils'
 import { coordinates, FORECAST_URL } from '@lib/constant'
 
 import type { ForecastData, City } from '@lib/types/forecast-data'
+import type { FetchState } from '@lib/types/shared'
 
 export default function UpdateButton() {
   const { key, setStorage } = useForecastContext<ForecastData, City>()
-  const [state, setState] = React.useState<'idle' | 'loading' | 'success'>(
-    'idle',
-  )
+  const [state, setState] = React.useState<FetchState>('idle')
 
   async function handleClickUpdate() {
     const city = key

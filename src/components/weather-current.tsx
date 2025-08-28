@@ -1,4 +1,5 @@
 import { useForecastContext } from '@context/store'
+import Frame from './ui/frame'
 import Title from './ui/title'
 import Unit from './ui/unit'
 import { currentPropsInPersian, currentUnitsInPersian } from '@lib/dictionary'
@@ -14,7 +15,7 @@ export default function WeatherCurrent() {
   const currentWeather = Object.entries(current)
 
   return (
-    <div className="grid overflow-x-auto rounded-md border border-slate-400 p-2 select-none md:flex-3/4 md:border-0 md:p-0">
+    <Frame className="grid overflow-x-auto select-none md:flex-3/4 md:border-0 md:p-0">
       <div className="flex min-w-3xl divide-x divide-slate-400 rounded-md border border-slate-400">
         <div className="flex bg-slate-950 py-1 text-center text-slate-100">
           <h3 className="font-semibold" style={{ writingMode: 'sideways-lr' }}>
@@ -41,6 +42,6 @@ export default function WeatherCurrent() {
           ) : null
         })}
       </div>
-    </div>
+    </Frame>
   )
 }

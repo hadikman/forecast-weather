@@ -1,8 +1,8 @@
-import MainLayout from './main-layout'
+import Main from './main'
 
 export default function NotReady() {
   return (
-    <MainLayout className="h-svh w-screen content-center justify-items-center">
+    <Main className="h-svh w-screen content-center justify-items-center">
       <h1 className="mb-3 text-2xl sm:mb-6 sm:text-4xl">در حال دریافت داده</h1>
       <div className="flex gap-1">
         {[0, 1, 2].map(i => (
@@ -13,6 +13,6 @@ export default function NotReady() {
           />
         ))}
       </div>
-    </MainLayout>
+    </Main>
   )
 }

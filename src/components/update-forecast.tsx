@@ -1,5 +1,6 @@
 import { useForecastContext } from '@context/store'
 import Select from 'react-select'
+import Frame from './ui/frame'
 import UpdateButton from './update-button'
 import { fetchData, formatDate, generateCitySelection } from '@lib/utils'
 import { citySelection, coordinates, FORECAST_URL } from '@lib/constant'
@@ -25,7 +26,7 @@ export default function UpdateForecast() {
 
   const { current } = storage
 
-  async function handleSelectCities(e: SingleValue<CitySelection>) {
+  async function handleSelectCity(e: SingleValue<CitySelection>) {
     const selectedCity = e?.value as City
     const storedCity = getStorage(selectedCity)
 
@@ -44,13 +45,13 @@ export default function UpdateForecast() {
   }
 
   return (
-    <div className="flex grow flex-wrap items-center gap-2 rounded-md border border-slate-400 p-2 sm:w-64 sm:gap-0">
+    <Frame className="flex grow flex-wrap items-center gap-2 sm:w-64 sm:gap-0">
       <div className="flex w-full flex-col gap-2 sm:flex-1/2">
         <Select
           options={citySelection}
           autoFocus
           closeMenuOnScroll
-          onChange={handleSelectCities}
+          onChange={handleSelectCity}
           value={generateCitySelection(city)}
           placeholder="انتخاب شهر"
         />
@@ -61,6 +62,6 @@ export default function UpdateForecast() {
         <h3 className="text-slate-400">آخرین بروزرسانی</h3>
         <h3 className="text-lg">{formatDate(current.time)}</h3>
       </div>
-    </div>
+    </Frame>
   )
 }
