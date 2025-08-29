@@ -59,7 +59,7 @@ function Item({ label, Icon, disabled, withTooltip, NavLinkProps }: ItemProps) {
         {!disabled && withTooltip && (
           <span
             aria-hidden="true"
-            className="absolute top-1/2 right-full z-[999] mr-4 h-(--btn-size) -translate-y-1/2 rounded-sm bg-black px-2.5 py-1.5 text-xs text-nowrap text-white opacity-0 transition-[opacity] group-hover/btn:opacity-100 group-[:not(:hover)]/btn:delay-100 before:absolute before:top-1/2 before:left-full before:-ml-1.5 before:size-2.5 before:-translate-y-1/2 before:rotate-45 before:rounded-[1px] before:bg-black before:content-['']"
+            className="absolute top-1/2 right-full z-[999] mr-4 h-(--btn-size) -translate-y-1/2 rounded-sm bg-black px-2.5 py-1.5 text-xs text-nowrap text-white opacity-0 transition-[opacity,transform] group-hover/btn:opacity-100 group-active/btn:opacity-100 group-[:not(:active)]/btn:delay-100 group-[:not(:hover)]/btn:delay-100 before:absolute before:top-1/2 before:left-full before:-ml-1.5 before:size-2.5 before:-translate-y-1/2 before:rotate-45 before:rounded-[1px] before:bg-black before:content-['']"
           >
             {label}
           </span>
