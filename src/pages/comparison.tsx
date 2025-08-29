@@ -1,8 +1,10 @@
 import React from 'react'
-import Select from 'react-select'
+import { ErrorBoundary, useErrorBoundary } from 'react-error-boundary'
 import Main from '@/components/main'
+import ErrorFallbackMessage from '@/components/error-fallback-message'
 import Frame from '@/components/ui/frame'
 import DatePicker from '@/components/ui/date-picker'
+import Select from 'react-select'
 import Button from '@/components/ui/button'
 import Table from '@/components/ui/table'
 import { fetchData, formatDate, hourlyDataToTableData, wait } from '@lib/utils'
@@ -33,14 +35,19 @@ export default function Comparison() {
   return (
     <Main>
       <div className="h-max space-y-4 overflow-x-hidden text-sm">
-        <Frame>
-          <ComparisonForm
-            setComparisonData={setComparisonData}
-            renderCache={
-              <DisplayCache data={comparisonData} setData={setComparisonData} />
-            }
-          />
-        </Frame>
+        <ErrorBoundary FallbackComponent={ErrorFallbackMessage}>
+          <Frame>
+            <ComparisonForm
+              setComparisonData={setComparisonData}
+              renderCache={
+                <DisplayCache
+                  data={comparisonData}
+                  setData={setComparisonData}
+                />
+              }
+            />
+          </Frame>
+        </ErrorBoundary>
 
         <Frame className="space-y-4">
           {hourlyArray && hourlyArray?.length > 0 ? (
@@ -81,6 +88,7 @@ function ComparisonForm({
   renderCache,
   setComparisonData,
 }: ComparisonFormProps) {
+  const { showBoundary } = useErrorBoundary()
   const [selectedDate, setSelectDate] = React.useState<Date>()
   const [selectedCities, setSelectedCities] = React.useState<
     MultiValue<CitySelection>
@@ -107,16 +115,21 @@ function ComparisonForm({
 
     setState('loading')
 
-    const result = await fetchData(apiUrl)
+    const result = await fetchData<{ data: ForecastData['hourly'][] }>(
+      apiUrl,
+    ).then(
+      res => res,
+      error => showBoundary(error),
+    )
 
-    if (result.data && result.data.length > 0) {
-      setState('success')
-
+    if (result?.data && result.data.length > 0) {
       const { data } = result
       setComparisonData({ selectedCities, selectedDate, hourly: data })
+
+      setState('success')
+      await wait(2000)
     }
 
-    await wait(2000)
     setState('idle')
   }
 

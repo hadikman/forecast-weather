@@ -1,5 +1,6 @@
 import React from 'react'
 import { useForecastContext } from '@context/store'
+import { useErrorBoundary } from 'react-error-boundary'
 import Button from './ui/button'
 import { fetchData, wait } from '@lib/utils'
 import { coordinates, FORECAST_URL } from '@lib/constant'
@@ -9,6 +10,7 @@ import type { FetchState } from '@lib/types/shared'
 
 export default function UpdateButton() {
   const { key, setStorage } = useForecastContext<ForecastData, City>()
+  const { showBoundary } = useErrorBoundary()
   const [state, setState] = React.useState<FetchState>('idle')
 
   async function handleClickUpdate() {
@@ -17,14 +19,19 @@ export default function UpdateButton() {
 
     setState('loading')
 
-    const result = await fetchData(
+    const result = await fetchData<ForecastData>(
       FORECAST_URL + '&latitude=' + lat + '&longitude=' + long,
+    ).then(
+      res => res,
+      error => showBoundary(error),
     )
 
-    setStorage(city, result)
+    if (result) {
+      setStorage(city, result)
+      setState('success')
+      await wait(2000)
+    }
 
-    setState('success')
-    await wait(2000)
     setState('idle')
   }
 

@@ -1,4 +1,5 @@
 import { useForecastContext } from '@context/store'
+import { useErrorBoundary } from 'react-error-boundary'
 import Select from 'react-select'
 import Frame from './ui/frame'
 import UpdateButton from './update-button'
@@ -21,6 +22,7 @@ export default function UpdateForecast() {
     setStorage,
     refreshStorage,
   } = useForecastContext<ForecastData, City>()
+  const { showBoundary } = useErrorBoundary()
 
   if (!storage) return
 
@@ -32,12 +34,17 @@ export default function UpdateForecast() {
 
     if (!storedCity) {
       const [lat, long] = coordinates[selectedCity]
-      const result = await fetchData(
+      const result = await fetchData<ForecastData>(
         FORECAST_URL + '&latitude=' + lat + '&longitude=' + long,
+      ).then(
+        res => res,
+        error => showBoundary(error),
       )
 
-      setStorage(selectedCity, result)
-      setKey(selectedCity)
+      if (result) {
+        setStorage(selectedCity, result)
+        setKey(selectedCity)
+      }
     } else {
       refreshStorage(selectedCity)
       setKey(selectedCity)
