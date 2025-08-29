@@ -24,8 +24,9 @@ export default function Button({
   return (
     <button
       className={clsx(
-        'cursor-pointer rounded-sm bg-black px-4.5 py-2.5 text-white transition-[background] hover:bg-black/80 focus:outline-2 focus:outline-offset-2 disabled:pointer-events-none disabled:animate-pulse disabled:bg-black/30 sm:py-2 [&_svg]:ms-2 [&_svg]:inline-block',
+        'cursor-pointer rounded-sm bg-black px-4.5 py-2.5 text-white transition-[background] hover:bg-black/80 focus:outline-2 focus:outline-offset-2 disabled:pointer-events-none disabled:bg-black/30 sm:py-2 [&_svg]:ms-2 [&_svg]:inline-block',
         className,
+        state === 'loading' && 'animate-pulse',
       )}
       type={type || 'button'}
       disabled={disabled || state === 'loading'}
