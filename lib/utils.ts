@@ -1,33 +1,4 @@
-export function wrapPromise<T>(promise: Promise<T>) {
-  let status: 'pending' | 'success' | 'error' = 'pending'
-  let result: T | unknown
-
-  const suspender = promise.then(
-    res => {
-      status = 'success'
-      result = res
-    },
-    err => {
-      status = 'error'
-      result = err
-    },
-  )
-
-  const read = (): T => {
-    switch (status) {
-      case 'pending':
-        throw suspender
-      case 'error':
-        throw result
-      default:
-        return result as T
-    }
-  }
-
-  return { read }
-}
-
-export async function fetchData(url: string) {
+export async function fetchData<T>(url: string): Promise<T> {
   return fetch(url).then(data => data.json())
 }
 
