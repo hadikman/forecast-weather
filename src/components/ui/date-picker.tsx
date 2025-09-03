@@ -4,6 +4,7 @@ import { DayPicker } from 'react-day-picker/persian'
 import { Undo2 } from 'lucide-react'
 
 import 'react-day-picker/style.css'
+import { getDefaultClassNames } from 'react-day-picker'
 
 type Props = {
   selected: Date | undefined
@@ -11,6 +12,7 @@ type Props = {
 }
 export default function DatePicker({ selected, setSelect }: Props) {
   const [month, setMonth] = React.useState<Date>(new Date())
+  const defaultClassNames = getDefaultClassNames()
   const pastDay = new Date()
 
   const isCurrentMonth = new Date().getMonth() === month?.getMonth()
@@ -20,6 +22,9 @@ export default function DatePicker({ selected, setSelect }: Props) {
   return (
     <DayPicker
       className="h-89"
+      classNames={{
+        day_button: `${defaultClassNames.day_button} size-9! sm:size-auto`,
+      }}
       month={month}
       onMonthChange={setMonth}
       selected={selected}
