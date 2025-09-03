@@ -205,7 +205,7 @@ function DisplayCache({ data, setData }: DisplayCacheProps) {
   return (
     <div className="group flex h-full flex-col">
       <div className="flex items-center">
-        <h3 className="mb-6 text-lg">آخرین مقایسه‌ها</h3>
+        <h3 className="text-lg">آخرین مقایسه‌ها</h3>
         <label
           htmlFor="toggle-list"
           className="mr-auto ml-2 rounded-sm p-1 transition-[background] hover:bg-zinc-200 sm:hidden sm:cursor-pointer"
@@ -219,9 +219,13 @@ function DisplayCache({ data, setData }: DisplayCacheProps) {
           <ChevronDown className="size-4 -rotate-90 transition-transform peer-checked:rotate-0" />
         </label>
       </div>
-      <ul className="h-0 grow divide-y divide-dashed divide-blue-500 overflow-y-auto opacity-0 transition-[height,opacity] delay-[150ms,100ms] duration-[300ms,200ms] group-[:has(input:checked)]:h-48 group-[:has(input:checked)]:opacity-100 group-[:has(input:checked)]:delay-[150ms,250ms] group-[:has(input:checked)]:duration-[250ms,100ms] sm:h-1 sm:opacity-100">
+      <ul className="h-0 grow divide-y divide-dashed divide-blue-500 overflow-y-auto opacity-0 transition-[height,opacity,margin] delay-[150ms,100ms] duration-[300ms,200ms] group-[:has(input:checked)]:mt-6 group-[:has(input:checked)]:h-48 group-[:has(input:checked)]:opacity-100 group-[:has(input:checked)]:delay-[150ms,250ms] group-[:has(input:checked)]:duration-[250ms,100ms] sm:h-1 sm:opacity-100">
         {cacheData.map(([date, cities, values, isActive]) => (
-          <li key={date} className="py-1" onClick={() => setData(values)}>
+          <li
+            key={date + cities.join('_')}
+            className="py-1"
+            onClick={() => setData(values)}
+          >
             <div
               className={`cursor-pointer rounded-md border border-transparent px-2.5 py-1.5 transition-all not-[&.active]:hover:border-zinc-900 [&.active]:border [&.active]:border-zinc-900 [&.active]:pr-3 [&.active]:font-bold ${isActive && 'active'}`}
             >
