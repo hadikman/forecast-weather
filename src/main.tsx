@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router'
+import { HashRouter, Routes, Route } from 'react-router'
 import { ForecastProvider } from '@context/store.tsx'
 import Layout from '@/components/layout'
 import HomePage from '@/pages/home'
@@ -14,7 +14,7 @@ import './index.css'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ForecastProvider defaultKey={cities[0]}>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
@@ -22,7 +22,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="comparison" element={<ComparisonPage />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </ForecastProvider>
   </StrictMode>,
 )
